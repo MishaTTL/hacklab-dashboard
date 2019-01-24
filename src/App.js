@@ -25,7 +25,7 @@ class App extends Component {
 			"Equipment": {
 				"Laser Cutter": null,
 				"3D Printers": null,
-				"2D print / scan": <Print2dHL />
+				"2D print or scan": <Print2dHL />
 			},
 			"Events": {
 				"Calendar": null,
