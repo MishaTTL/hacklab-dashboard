@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SidebarHL from './sidebar';
 import Utilities from './pages/utilities';
 import Print2dHL from './pages/2dPrint';
+import NotFoundHL from './pages/notFound';
 import Signs from './pages/signs';
 import './App.css';
 
@@ -10,6 +11,49 @@ class App extends Component {
 		super(props);
 		this.state = {page:1};
 		this.onChoice = this.onChoice.bind(this);
+
+		this.sidebarItemsJson = {
+			"Member List": null,
+			"Transport": {
+				"Parking Spot": null,
+				"Transit Info": null
+			},
+			"Occupancy": {
+				"Interior Sensors": null,
+				"Door Bot": null
+			},
+			"Equipment": {
+				"Laser Cutter": null,
+				"3D Printers": null,
+				"2D print / scan": <Print2dHL />
+			},
+			"Events": {
+				"Calendar": null,
+				"Door Mode": null,
+				"DJ Console": null
+			},
+			"Sound System": null,
+			"Sign and Display": <Signs />,
+			"Communications": null,
+			"Statistics": null,
+			"Utilities": <Utilities />,
+			"Sysadmin": null
+		};
+	}
+
+	getPage() {
+		const allItems = this.sidebarItemsJson;
+		const page = this.state.page.toString().split(".");
+
+		if(allItems.hasOwnProperty(page[0])) {
+			const picked = allItems[page];
+			if(picked && picked.hasOwnProperty("type"))
+				return picked;
+			else
+				return picked[1];
+		}
+
+		return <NotFoundHL />;
 	}
 
 	onChoice(choice) {
@@ -38,14 +82,16 @@ class App extends Component {
 					</Nav>*/}
 				</header>
 
-				<SidebarHL onChoice={this.onChoice}></SidebarHL>
+				<SidebarHL sidebarContent={this.sidebarItemsJson} onChoice={this.onChoice}></SidebarHL>
 
 				<div className="hacklab-inner-frame">
-					{[
+					{/*[
 						<Utilities />,
 						<Signs />,
 						<Print2dHL />
-					][this.state.page-1]}
+					][this.state.page]*/
+					this.getPage()
+					}
 				</div>
 			</div>
 		);
