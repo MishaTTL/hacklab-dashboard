@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Signs extends Component {
+class SignsHL extends Component {
 	onDrop() {
 		console.log("dropped");
 	}
@@ -15,4 +15,4 @@ class Signs extends Component {
 	}
 }
 
-export default Signs;
+export default SignsHL;

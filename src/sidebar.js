@@ -11,17 +11,24 @@ class SidebarHL extends Component {
 		this.props.onChoice(choice);
 	}
 
+	mapDropdownItems(hsubkey, sidx) {
+		const subkey = hsubkey.toLowerCase().split(' ').join('_');
+		return <MenuItem key={sidx} eventKey={`super.${subkey}`} href={`#/${subkey}`} >{hsubkey}</MenuItem>;
+	}
+
+	//Took out onSelect={this.onChoice} and replaced with 'hash-router' package
 	render() {
 		const sidebarKeys = Object.keys(this.props.sidebarContent);
 
-		const sidebarItemsArray = sidebarKeys.map( (key, idx) => {
-			const item = this.props.sidebarContent[key];
+		const sidebarItemsArray = sidebarKeys.map( (hkey, idx) => {
+			const item = this.props.sidebarContent[hkey];
+			const key = hkey.toLowerCase().split(' ').join('_');
 
 			return (
-				<NavItem id={`nav_${key}`} key={key} eventKey={key} title={key} onSelect={this.onChoice}>
-					{(!item || item.type) ? key :
-						<NavDropdown id={`drop_${key}`} eventKey={key} title={key}>
-							{Object.keys(item).map( (subkey, sidx) => <MenuItem key={subkey} eventKey={`${key}.${subkey}`} onSelect={this.props.onChoice}>{subkey}</MenuItem>)}
+				<NavItem id={`nav_${key}`} key={idx} eventKey={key} title={key} href={`#/${key}`}>
+					{(!item || (typeof item == "function")) ? hkey :
+						<NavDropdown id={`drop_${key}`} eventKey={key} title={hkey}>
+							{Object.keys(item).map(this.mapDropdownItems) }
 						</NavDropdown>
 					}
 				</NavItem>

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import { HashRouter, Route } from 'react-router-dom';
 import SidebarHL from './sidebar';
-import Utilities from './pages/utilities';
+import UtilitiesHL from './pages/utilities';
 import Print2dHL from './pages/2dPrint';
 import NotFoundHL from './pages/notFound';
-import Signs from './pages/signs';
+import SignsHL from './pages/signs';
+import ParkingSpotHL from './pages/parking_spot';
+//import { ParkingSpotHL, Print2dHL, SignsHL, UtilitiesHL, NotFoundHL } from './pages/allPages';
 import './App.css';
 
 class App extends Component {
@@ -13,9 +16,15 @@ class App extends Component {
 		this.onChoice = this.onChoice.bind(this);
 
 		this.sidebarItemsJson = {
-			"Member List": null,
+			"Members": {
+				"Members": null,
+				"Administration": null,
+				"Alumni": null,
+				"Friends of Hacklab": null,
+				"Skill Badges": null
+			},
 			"Transport": {
-				"Parking Spot": null,
+				"Parking Spot": ParkingSpotHL,
 				"Transit Info": null
 			},
 			"Occupancy": {
@@ -25,7 +34,7 @@ class App extends Component {
 			"Equipment": {
 				"Laser Cutter": null,
 				"3D Printers": null,
-				"2D print or scan": <Print2dHL />
+				"2D print or scan": Print2dHL
 			},
 			"Events": {
 				"Calendar": null,
@@ -33,12 +42,31 @@ class App extends Component {
 				"DJ Console": null
 			},
 			"Sound System": null,
-			"Sign and Display": <Signs />,
+			"Sign and Display": SignsHL,
 			"Communications": null,
 			"Statistics": null,
-			"Utilities": <Utilities />,
-			"Sysadmin": null
+			"Utilities": UtilitiesHL,
+			"Sysadmin": {
+				"Local Server": null,
+				"Remote Server": null,
+				"Network": null
+			},
+			"Report a Problem": null
 		};
+
+		this.sidebarItemsJsonFlat = this.flattenSidebarItemsTree(this.sidebarItemsJson);
+	}
+
+	flattenSidebarItemsTree(tree) {
+		let flatTree = {}
+		for (const key in tree) {
+			const value = tree[key];
+			if (!value || typeof value == "function")
+				flatTree[key.toLowerCase().split(' ').join('_')] = value ? value : NotFoundHL;
+			else
+				for (const subkey in value) flatTree[subkey.toLowerCase().split(' ').join('_')] = value[subkey] ? value[subkey] : NotFoundHL;
+		}
+		return flatTree;
 	}
 
 	getPage() {
@@ -84,15 +112,12 @@ class App extends Component {
 
 				<SidebarHL sidebarContent={this.sidebarItemsJson} onChoice={this.onChoice}></SidebarHL>
 
-				<div className="hacklab-inner-frame">
-					{/*[
-						<Utilities />,
-						<Signs />,
-						<Print2dHL />
-					][this.state.page]*/
-					this.getPage()
-					}
-				</div>
+				<HashRouter>
+					<div className="hacklab-inner-frame">
+						<Route exact path="/" component={NotFoundHL} />
+						{Object.keys(this.sidebarItemsJsonFlat).map( (key, idx) => <Route key={idx} path={`/${key}`} component={this.sidebarItemsJsonFlat[key]} />)}
+					</div>
+				</HashRouter>
 			</div>
 		);
 	}

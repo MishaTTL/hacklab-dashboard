@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Utilities extends Component {
+class UtilitiesHL extends Component {
 	render() {
 		return (
 			<div>
@@ -15,4 +15,4 @@ class Utilities extends Component {
 	}
 }
 
-export default Utilities;
+export default UtilitiesHL;
